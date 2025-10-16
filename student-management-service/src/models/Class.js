@@ -1,0 +1,1 @@
+module.exports = require('../../../class-management-service/src/models/Class');

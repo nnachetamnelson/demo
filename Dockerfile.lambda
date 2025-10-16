@@ -1,0 +1,52 @@
+# -----------------------------
+# Stage 1: AWS Lambda Web Adapter base
+# -----------------------------
+FROM public.ecr.aws/awsguru/aws-lambda-adapter:0.9.1 AS aws_lwa
+
+# -----------------------------
+# Stage 2: Node.js runtime
+# -----------------------------
+FROM public.ecr.aws/lambda/nodejs:20
+
+# Set working directory
+WORKDIR ${LAMBDA_TASK_ROOT}
+
+# Copy package files
+COPY package.json package-lock.json* ./
+
+# Install production dependencies (with caching)
+RUN npm ci --omit=dev --prefer-offline --no-audit
+
+# Copy application code
+COPY server.js ./
+COPY shared/ ./shared/
+COPY auth-service/ ./auth-service/
+COPY admin-profiles-service/ ./admin-profiles-service/
+COPY student-management-service/ ./student-management-service/
+COPY class-management-service/ ./class-management-service/
+COPY attendance-management-service/ ./attendance-management-service/
+COPY Exam-management-service/ ./Exam-management-service/
+COPY Report-management-service/ ./Report-management-service/
+COPY Notification-service/ ./Notification-service/
+COPY parent-student-portal-service/ ./parent-student-portal-service/
+
+# Install AWS Lambda Web Adapter as an extension (recommended mode)
+COPY --from=aws_lwa /lambda-adapter /opt/extensions/lambda-adapter
+RUN chmod +x /opt/extensions/lambda-adapter
+
+# Required for Lambda Web Adapter + Express
+ENV PORT=8080
+ENV NODE_ENV=production
+
+# Make the adapter report ready only after your app returns 200 here
+ENV AWS_LWA_READINESS_CHECK_PATH=/health
+# Increase readiness check timeout for database connections
+ENV AWS_LWA_READINESS_CHECK_TIMEOUT=30000
+# Enable gzip compression
+ENV AWS_LWA_ENABLE_COMPRESSION=true
+
+# Expose the port (not used by Lambda, but good documentation)
+EXPOSE 8080
+
+# App starts normally; adapter runs as an extension
+CMD ["node", "server.js"]

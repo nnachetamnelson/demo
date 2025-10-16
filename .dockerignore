@@ -1,0 +1,69 @@
+# Node
+node_modules/
+**/node_modules/
+npm-debug.log
+yarn-error.log
+.npm
+.yarn
+package-lock.json.bak
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Build
+dist/
+build/
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Git
+.git/
+.gitignore
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Documentation
+*.md
+!README.md
+
+# Tests
+test/
+tests/
+*.test.js
+*.spec.js
+
+# Frontend
+frontend/
+
+# Deployment
+terraform/
+deploy-*.sh
+deploy-*.ps1
+
+# Logs
+*.log
+**/*.log
+student-service.log
+
+# Scripts
+register-user.ps1
+test-lambda-local.ps1
+
+# Large/unnecessary files
+package-lock.json.bak
+*.png
+*.jpg
+*.jpeg
+*.gif
+first.png

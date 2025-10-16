@@ -1,0 +1,1 @@
+module.exports = require('../../../auth-service/src/models/User');
